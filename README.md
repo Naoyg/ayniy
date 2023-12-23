@@ -28,7 +28,7 @@ runner.submission()
 ## Examples
 
 | Platform | Competition Name | Rank | Repository |
-| --- | --- | --- | --- | 
+| --- | --- | --- | --- |
 | CodaLab | [Basketball Behavior Challenge BBC2020](https://competitions.codalab.org/competitions/23905) | 1 | [Link](https://github.com/upura/basketball-behavior-challenge) |
 | Nishika| [財務・非財務情報を活用した株主価値予測](https://www.nishika.com/competitions/4/summary) | 2 | [Link](https://github.com/upura/nishika-yuho) |
 | SIGIR2021| [SIGIR eCOM 2021 Data Challenge](https://github.com/upura/sigir-ecom-2021) | 3 | [Link](https://sigir-ecom.github.io/data-task.html) |
@@ -54,7 +54,7 @@ sh start.sh
 #### Environment
 
 ```bash
-docker-compose -d --build
+docker compose -d --build
 docker exec -it ayniy-test bash
 ```
 
