@@ -31,7 +31,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-HOME_PATH = Path(__file__).resolve().parents[1]
+HOME_PATH = Path(__file__).resolve().parents[2]
 
 logger = Logger()
 models_map = {
