@@ -1,10 +1,13 @@
 import os
+from pathlib import Path
 
 import pandas as pd
 import xfeat
 from ayniy.preprocessing import xfeat_runner, xfeat_target_encoding
 from ayniy.utils import FeatureStore
 from xfeat import ArithmeticCombinations, ConcatCombination, CountEncoder, LabelEncoder
+
+HOME_PATH = Path(__file__).resolve().parents[1]
 
 categorical_cols = [
     "Type",
@@ -36,11 +39,11 @@ target_col = "AdoptionSpeed"
 
 
 def load_petfinder() -> pd.DataFrame:
-    filepath = "../input/petfinder-adoption-prediction/train_test.ftr"
+    filepath = HOME_PATH / "input/petfinder-adoption-prediction/train_test.ftr"
     if not os.path.exists(filepath):
         # Convert dataset into feather format.
-        train = pd.read_csv("../input/petfinder-adoption-prediction/train/train.csv")
-        test = pd.read_csv("../input/petfinder-adoption-prediction/test/test.csv")
+        train = pd.read_csv(HOME_PATH / "input/petfinder-adoption-prediction/train/train.csv")
+        test = pd.read_csv(HOME_PATH / "input/petfinder-adoption-prediction/test/test.csv")
 
         xfeat.utils.compress_df(pd.concat([train, test], sort=False)).reset_index(
             drop=True
@@ -63,21 +66,21 @@ if __name__ == "__main__":
             )
         ],
         input_df=train[numerical_cols],
-        output_filename="../input/petfinder-adoption-prediction/ArithmeticCombinations.ftr",
+        output_filename=HOME_PATH / "input/petfinder-adoption-prediction/ArithmeticCombinations.ftr",
     )
 
     # LabelEncoder
     xfeat_runner(
         pipelines=[LabelEncoder(output_suffix="")],
         input_df=train[categorical_cols],
-        output_filename="../input/petfinder-adoption-prediction/LabelEncoder.ftr",
+        output_filename=HOME_PATH / "input/petfinder-adoption-prediction/LabelEncoder.ftr",
     )
 
     # CountEncoder
     xfeat_runner(
         pipelines=[LabelEncoder(output_suffix=""), CountEncoder()],
         input_df=train[categorical_cols],
-        output_filename="../input/petfinder-adoption-prediction/CountEncoder.ftr",
+        output_filename=HOME_PATH / "input/petfinder-adoption-prediction/CountEncoder.ftr",
     )
 
     # ConcatCombination r=2
@@ -88,7 +91,7 @@ if __name__ == "__main__":
             LabelEncoder(output_suffix=""),
         ],
         input_df=train[categorical_cols],
-        output_filename="../input/petfinder-adoption-prediction/ConcatCombinationR2.ftr",
+        output_filename=HOME_PATH / "input/petfinder-adoption-prediction/ConcatCombinationR2.ftr",
     )
 
     # ConcatCombination r=2 & CountEncoder
@@ -99,25 +102,25 @@ if __name__ == "__main__":
             CountEncoder(),
         ],
         input_df=train[categorical_cols],
-        output_filename="../input/petfinder-adoption-prediction/ConcatCombinationCountEncoder.ftr",  # noqa: B950
+        output_filename=HOME_PATH / "input/petfinder-adoption-prediction/ConcatCombinationCountEncoder.ftr",  # noqa: B950
     )
 
     # TargetEncoder
     xfeat_target_encoding(
         target_col=target_col,
         input_df=train[categorical_cols + [target_col]],
-        output_filename="../input/petfinder-adoption-prediction/TargetEncoder.ftr",
+        output_filename=HOME_PATH / "input/petfinder-adoption-prediction/TargetEncoder.ftr",
     )
 
     features = FeatureStore(
         feature_names=[
-            "../input/petfinder-adoption-prediction/train_test.ftr",
-            "../input/petfinder-adoption-prediction/ArithmeticCombinations.ftr",
-            "../input/petfinder-adoption-prediction/LabelEncoder.ftr",
-            "../input/petfinder-adoption-prediction/CountEncoder.ftr",
-            "../input/petfinder-adoption-prediction/ConcatCombinationR2.ftr",
-            "../input/petfinder-adoption-prediction/ConcatCombinationCountEncoder.ftr",
-            "../input/petfinder-adoption-prediction/TargetEncoder.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/train_test.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/ArithmeticCombinations.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/LabelEncoder.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/CountEncoder.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/ConcatCombinationR2.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/ConcatCombinationCountEncoder.ftr",
+            HOME_PATH / "input/petfinder-adoption-prediction/TargetEncoder.ftr",
         ],
         target_col="AdoptionSpeed",
     )

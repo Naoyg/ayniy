@@ -1,6 +1,6 @@
 import json
-import os
 from typing import Any, Dict, List
+from pathlib import Path
 
 import lightgbm as lgb
 import numpy as np
@@ -9,6 +9,10 @@ import pandas as pd
 from ayniy.model.model import Model
 from ayniy.utils import Data
 from scipy.misc import derivative
+
+HOME_PATH = Path(__file__).resolve().parents[2]
+MODEL_DIR = HOME_PATH / "output/model"
+MODEL_DIR.mkdir(exist_ok=True)
 
 
 class ModelLGBM(Model):
@@ -66,12 +70,11 @@ class ModelLGBM(Model):
         return fold_importance_df
 
     def save_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         Data.dump(self.model, model_path)
 
     def load_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         self.model = Data.load(model_path)
 
 
@@ -132,7 +135,7 @@ class ModelOptunaLGBM(Model):
                 tuning_history=tuning_history,
             )
         print("Best Params:", best_params)
-        with open(f"../output/model/{self.run_fold_name}_best_params.json", "w") as f:
+        with open(MODEL_DIR / f"{self.run_fold_name}_best_params.json", "w") as f:
             json.dump(best_params, f, indent=4, separators=(",", ": "))
 
     def predict(self, te_x: pd.DataFrame) -> np.ndarray:
@@ -147,12 +150,11 @@ class ModelOptunaLGBM(Model):
         return fold_importance_df
 
     def save_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         Data.dump(self.model, model_path)
 
     def load_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         self.model = Data.load(model_path)
 
 
@@ -257,10 +259,9 @@ class ModelFocalLGBM(Model):
         return fold_importance_df
 
     def save_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         Data.dump(self.model, model_path)
 
     def load_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
+        model_path = MODEL_DIR /  f"{self.run_fold_name}.model"
         self.model = Data.load(model_path)

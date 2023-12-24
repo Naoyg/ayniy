@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -8,6 +8,10 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model as kerasModel
 from tensorflow.keras.models import load_model
+
+HOME_PATH = Path(__file__).resolve().parents[2]
+MODEL_DIR = HOME_PATH / "output/model"
+MODEL_DIR.mkdir(exist_ok=True)
 
 
 def get_keras_data(
@@ -86,7 +90,7 @@ class ModelNN(oriModel):
             )
         else:
             model.fit(tr_x, tr_y, batch_size=batch_size, nb_epoch=nb_epoch)
-        model.load_weights(f"../output/model/model_{self.run_fold_name}.hdf5")
+        model.load_weights(MODEL_DIR / f"model_{self.run_fold_name}.hdf5")
 
         # モデル・スケーラーの保持
         self.model = model
@@ -100,10 +104,9 @@ class ModelNN(oriModel):
         return pred
 
     def save_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.h5")
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        model_path = MODEL_DIR / f"{self.run_fold_name}.h5"
         self.model.save(model_path)  # type: ignore
 
     def load_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.h5")
+        model_path = MODEL_DIR / f"{self.run_fold_name}.h5"
         self.model = load_model(model_path)
