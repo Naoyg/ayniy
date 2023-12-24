@@ -1,10 +1,14 @@
-import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from ayniy.model.model import Model
 from ayniy.utils import Data
 from sklearn.linear_model import Ridge
+
+HOME_PATH = Path(__file__).resolve().parents[2]
+MODEL_DIR = HOME_PATH / "output/model"
+MODEL_DIR.mkdir(exist_ok=True)
 
 
 class ModelRIDGE(Model):
@@ -32,10 +36,9 @@ class ModelRIDGE(Model):
         return fold_importance_df
 
     def save_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         Data.dump(self.model, model_path)
 
     def load_model(self) -> None:
-        model_path = os.path.join("../output/model", f"{self.run_fold_name}.model")
+        model_path = MODEL_DIR / f"{self.run_fold_name}.model"
         self.model = Data.load(model_path)
