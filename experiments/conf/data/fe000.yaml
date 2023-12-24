@@ -1,0 +1,12 @@
+# @package _global_
+fe_name: fe000
+data:
+  sample_submission: input/titanic/gender_submission.csv
+cols_definition:
+  categorical_col:
+    - Sex
+    - SibSp
+    - Parch
+    - Cabin
+    - Embarked
+  target_col: Survived

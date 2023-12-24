@@ -1,25 +1,23 @@
-import argparse
-
-import yaml
+import hydra
 from ayniy.model.runner import Runner
+from omegaconf import DictConfig
 from sklearn.model_selection import StratifiedKFold
 
-if __name__ == "__main__":
+
+@hydra.main(config_name="config", config_path="conf")
+def main(cfg: DictConfig):
     """
     cd experiments
-    python runner.py --run configs/run000.yml
+    python runner.py model=lgbm data=fe000
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--run")
-    args = parser.parse_args()
-
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=7)
 
-    if args.run:
-        f = open(args.run, "r+")
-        run_configs = yaml.load(f, Loader=yaml.SafeLoader)
+    run_configs = cfg
+    runner = Runner(run_configs, cv)
+    runner.run_train_cv()
+    runner.run_predict_cv()
+    runner.submission()
 
-        runner = Runner(run_configs, cv)
-        runner.run_train_cv()
-        runner.run_predict_cv()
-        runner.submission()
+
+if __name__ == "__main__":
+    main()

@@ -1,17 +1,4 @@
-description: LightGBM
-exp_name: titanic
-run_name: run000
-fe_name: fe000
-data:
-  sample_submission: input/titanic/gender_submission.csv
-cols_definition:
-  categorical_col:
-    - Sex
-    - SibSp
-    - Parch
-    - Cabin
-    - Embarked
-  target_col: Survived
+# @package _global_
 model_name: ModelLGBM
 params:
   num_leaves: 16
@@ -29,4 +16,3 @@ params:
   random_state: 42
   num_boost_round: 50000
   early_stopping_rounds: 100
-evaluation_metric: auc
