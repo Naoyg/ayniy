@@ -1,0 +1,3 @@
+model_name: ModelSVM
+params:
+  random_state: 0
