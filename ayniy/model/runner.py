@@ -340,7 +340,7 @@ class Runner:
 
     def submission(self) -> None:
         pred = Data.load(HOME_PATH / f"output/pred/{self.run_name}-test.pkl")
-        sub = pd.read_csv(self.sample_submission)
+        sub = pd.read_csv(HOME_PATH / self.sample_submission)
         if self.advanced and "predict_exp" in self.advanced:
             sub[self.cols_definition["target_col"]] = np.exp(pred)
         else:
