@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any, Dict, Tuple, Union
 
 import matplotlib.pyplot as plt
@@ -30,6 +31,8 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
+HOME_PATH = Path(__file__).resolve().parents[1]
+
 logger = Logger()
 models_map = {
     "ModelCatClassifier": ModelCatClassifier,
@@ -53,9 +56,9 @@ class Runner:
         self.run_name = configs["run_name"]
         self.run_id = None
         self.fe_name = configs["fe_name"]
-        self.X_train = Data.load(f"../input/pickle/X_train_{configs['fe_name']}.pkl")
-        self.y_train = Data.load(f"../input/pickle/y_train_{configs['fe_name']}.pkl")
-        self.X_test = Data.load(f"../input/pickle/X_test_{configs['fe_name']}.pkl")
+        self.X_train = Data.load(HOME_PATH / f"input/pickle/X_train_{configs['fe_name']}.pkl")
+        self.y_train = Data.load(HOME_PATH / f"input/pickle/y_train_{configs['fe_name']}.pkl")
+        self.X_test = Data.load(HOME_PATH / f"input/pickle/X_test_{configs['fe_name']}.pkl")
         self.evaluation_metric = configs["evaluation_metric"]
         self.params = configs["params"]
         self.cols_definition = configs["cols_definition"]
@@ -216,7 +219,7 @@ class Runner:
         logger.info(f"{self.run_name} - end training cv - score {cv_score}")
 
         # 予測結果の保存
-        Data.dump(preds, f"../output/pred/{self.run_name}-train.pkl")
+        Data.dump(preds, HOME_PATH / f"output/pred/{self.run_name}-train.pkl")
 
         # mlflow
         self.run_id = mlflow.active_run().info.run_id
@@ -274,7 +277,7 @@ class Runner:
         pred_avg = np.mean(preds, axis=0)
 
         # 予測結果の保存
-        Data.dump(pred_avg, f"../output/pred/{self.run_name}-test.pkl")
+        Data.dump(pred_avg, HOME_PATH / f"output/pred/{self.run_name}-test.pkl")
 
         logger.info(f"{self.run_name} - end prediction cv")
 
@@ -287,7 +290,7 @@ class Runner:
             )
             cols = aggs[:200].index
             pd.DataFrame(aggs.index).to_csv(
-                f"../output/importance/{self.run_name}-fi.csv", index=False
+                HOME_PATH / f"output/importance/{self.run_name}-fi.csv", index=False
             )
 
             best_features = feature_importances.loc[
@@ -301,12 +304,12 @@ class Runner:
             )
             plt.title("Features (averaged over folds)")
             plt.tight_layout()
-            plt.savefig(f"../output/importance/{self.run_name}-fi.png")
+            plt.savefig(HOME_PATH / f"output/importance/{self.run_name}-fi.png")
             plt.show()
 
             # mlflow
             mlflow.start_run(run_id=self.run_id)
-            log_artifact(f"../output/importance/{self.run_name}-fi.png")
+            log_artifact(HOME_PATH / f"output/importance/{self.run_name}-fi.png")
             mlflow.end_run()
 
     def build_model(self, i_fold: Union[int, str]) -> Model:
@@ -336,13 +339,13 @@ class Runner:
             return list(self.cv.split(self.X_train, self.y_train))[i_fold]
 
     def submission(self) -> None:
-        pred = Data.load(f"../output/pred/{self.run_name}-test.pkl")
+        pred = Data.load(HOME_PATH / f"output/pred/{self.run_name}-test.pkl")
         sub = pd.read_csv(self.sample_submission)
         if self.advanced and "predict_exp" in self.advanced:
             sub[self.cols_definition["target_col"]] = np.exp(pred)
         else:
             sub[self.cols_definition["target_col"]] = pred
-        sub.to_csv(f"../output/submissions/submission_{self.run_name}.csv", index=False)
+        sub.to_csv(HOME_PATH / f"output/submissions/submission_{self.run_name}.csv", index=False)
 
     def reset_mlflow(self) -> None:
         mlflow.end_run()
