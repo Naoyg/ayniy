@@ -31,7 +31,7 @@ numerical_cols = [
 target_col = "Survived"
 id_col = "PassengerId"
 input_dir = HOME_PATH / "input/features"
-output_dir = HOME_PATH / "input"
+output_dir = HOME_PATH / "input/pickle"
 
 
 if __name__ == "__main__":
