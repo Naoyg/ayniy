@@ -249,3 +249,6 @@ dmypy.json
 
 # hydra
 .hydra
+
+# html
+*.html
