@@ -8,3 +8,4 @@ mlflow==1.10.0
 neologdn==0.4
 node2vec==0.4.0
 pysen[lint]==0.9.0
+sweetviz==2.3.1
