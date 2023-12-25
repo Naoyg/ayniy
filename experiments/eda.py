@@ -27,20 +27,27 @@ def load_dataset(cfg):
 
 @hydra.main(config_name="config_eda", config_path="conf")
 def main(cfg: DictConfig):
+    save_dir = HOME_PATH / "report"
+    save_dir.mkdir(exist_ok=True)
+    cwd_hydra = Path.cwd()
+
     df_train, df_test = load_dataset(cfg)
 
     report = sv.analyze(
         [df_train, "Training Data"], target_feat=cfg.cols_definition.target_col, pairwise_analysis="off")
+    file_report = save_dir / "sweetviz_report.html"
     report.show_html(
-      filepath="sweetviz_report.html",
+      filepath=file_report,
       open_browser=False,
       layout="widescreen",
       scale=None)
 
+    mlflow.set_tracking_uri("file://"+str(HOME_PATH / "experiments/mlruns"))
     mlflow.set_experiment(cfg.exp_name)
     with mlflow.start_run(run_name=cfg.run_name):
         mlflow.log_params(cfg)
-        mlflow.log_artifacts(".")
+        mlflow.log_artifact(file_report)
+        mlflow.log_artifacts(cwd_hydra)
 
 
 if __name__ == "__main__":
