@@ -163,6 +163,7 @@ class Runner:
         学習・評価とともに、各foldのモデルの保存、スコアのログ出力についても行う
         """
         # mlflow
+        mlflow.set_tracking_uri("file://"+str(HOME_PATH / "experiments/mlruns"))
         mlflow.set_experiment(self.exp_name)
         mlflow.start_run(run_name=self.run_name)
         logger.info(f"{self.run_name} - start training cv")

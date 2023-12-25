@@ -62,7 +62,7 @@ docker exec -it ayniy-test bash
 
 ```bash
 cd experiments
-mlflow ui -h 0.0.0.0
+mlflow ui -h 0.0.0.0 --port 5001
 ```
 
 ### Kaggle Notebook
