@@ -32,6 +32,9 @@ def replace_inf(df):
 
 @hydra.main(config_name="config_eda", config_path="conf")
 def main(cfg: DictConfig):
+    id_col = cfg.cols_definition.get("id_col")
+    categorical_cols = list(cfg.cols_definition.get("categorical_col", []))
+    target_col = cfg.cols_definition.get("target_col")
     save_dir = HOME_PATH / "output/report"
     save_dir.mkdir(exist_ok=True)
     cwd_hydra = Path.cwd()
@@ -39,26 +42,35 @@ def main(cfg: DictConfig):
     df_train, df_test = load_dataset(cfg)
     df_train, df_test = replace_inf(df_train), replace_inf(df_test)
 
+    feature_config = sv.FeatureConfig(skip=id_col, force_cat=categorical_cols)
     report = sv.analyze(
-        [df_train, "Training Data"], target_feat=cfg.cols_definition.target_col, pairwise_analysis="off")
+        [df_train, "Training Data"],
+        target_feat=target_col,
+        feat_cfg=feature_config,
+        pairwise_analysis="off",
+    )
     file_report = save_dir / "sweetviz_report.html"
     report.show_html(
-      filepath=file_report,
-      open_browser=False,
-      layout="widescreen",
-      scale=None)
+        filepath=file_report, open_browser=False, layout="widescreen", scale=None
+    )
 
-    feature_config = sv.FeatureConfig(skip=cfg.cols_definition.target_col)
+    skip_cols = [c for c in [id_col, target_col] if c]
+    feature_config = sv.FeatureConfig(skip=skip_cols, force_cat=categorical_cols)
     compare_report = sv.compare(
-        [df_train, "Training Data"], [df_test, "Test Data"], feat_cfg=feature_config, pairwise_analysis="off")
+        [df_train, "Training Data"],
+        [df_test, "Test Data"],
+        feat_cfg=feature_config,
+        pairwise_analysis="off",
+    )
     file_compare_report = save_dir / "sweetviz_compare_report.html"
     compare_report.show_html(
-      filepath=file_compare_report,
-      open_browser=False,
-      layout="widescreen",
-      scale=None)
+        filepath=file_compare_report,
+        open_browser=False,
+        layout="widescreen",
+        scale=None,
+    )
 
-    mlflow.set_tracking_uri("file://"+str(HOME_PATH / "experiments/mlruns"))
+    mlflow.set_tracking_uri("file://" + str(HOME_PATH / "experiments/mlruns"))
     mlflow.set_experiment(cfg.exp_name)
     with mlflow.start_run(run_name=cfg.run_name):
         mlflow.log_params(cfg)
