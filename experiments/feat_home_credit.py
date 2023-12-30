@@ -12,9 +12,13 @@ import xfeat
 HOME_PATH = Path(__file__).resolve().parents[1]
 try:
     sys.path.append(str(HOME_PATH))
-    from ayniy.utils import reduce_mem_usage
+    from ayniy.utils import Data, reduce_mem_usage
 except Exception as e:
     raise e
+
+id_col = "SK_ID_CURR"
+target_col = "TARGET"
+output_dir = HOME_PATH / "input/pickle"
 
 
 def load_application() -> pd.DataFrame:
@@ -37,19 +41,19 @@ def convert_category_type(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
 def main():
-    application_train = load_application()
-    application_train = reduce_mem_usage(application_train)
+    df_application = load_application()
+    df_application = reduce_mem_usage(df_application)
+    df_application.set_index(id_col, inplace=True)
+    df_application_train, df_application_test = df_application[df_application["TARGET"].notna()], df_application[df_application["TARGET"].isna()]
 
-    X_train = application_train.drop(columns=["TARGET", "SK_ID_CURR"])
-    y_train = application_train["TARGET"]
-    id_train = application_train[["SK_ID_CURR"]]
+    X_train, X_test = df_application_train.drop(columns=[target_col]), df_application_test.drop(columns=[target_col])
+    y_train = df_application_train[target_col]
 
-    X_train = convert_category_type(X_train)
-
-
-
+    Data.dump(X_train, output_dir / "X_train_fe000.pkl")
+    Data.dump(X_test, output_dir / "X_test_fe000.pkl")
+    Data.dump(y_train, output_dir / "y_train_fe000.pkl")
 
 
 if __name__ == "__main__":
+    main()
