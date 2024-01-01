@@ -26,7 +26,7 @@ def load_dataset(cfg):
 
 
 def replace_inf(df):
-    to_replace = {np.inf: 9999999999, -np.nan: -9999999999}
+    to_replace = {np.inf: 9999999999, -np.inf: -9999999999}
     return df.replace(to_replace)
 
 
@@ -41,6 +41,7 @@ def main(cfg: DictConfig):
 
     df_train, df_test = load_dataset(cfg)
     df_train, df_test = replace_inf(df_train), replace_inf(df_test)
+    id_col = id_col if id_col in df_train.columns else None
 
     feature_config = sv.FeatureConfig(skip=id_col, force_cat=categorical_cols)
     report = sv.analyze(
@@ -73,7 +74,7 @@ def main(cfg: DictConfig):
     mlflow.set_tracking_uri("file://" + str(HOME_PATH / "experiments/mlruns"))
     mlflow.set_experiment(cfg.exp_name)
     with mlflow.start_run(run_name=cfg.run_name):
-        mlflow.log_params(cfg)
+        mlflow.log_params({"fe_name": cfg.fe_name})
         mlflow.log_artifacts(save_dir)
         mlflow.log_artifacts(cwd_hydra)
 
