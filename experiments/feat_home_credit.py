@@ -43,7 +43,8 @@ def convert_category_type(df: pd.DataFrame) -> pd.DataFrame:
 
 def main():
     df_application = load_application()
-    df_application = reduce_mem_usage(df_application)
+    # df_application = reduce_mem_usage(df_application)
+    df_application = convert_category_type(df_application)
     df_application.set_index(id_col, inplace=True)
     df_application_train, df_application_test = df_application[df_application["TARGET"].notna()], df_application[df_application["TARGET"].isna()]
 
