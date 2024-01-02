@@ -1,0 +1,72 @@
+# @package _global_
+fe_name: fe002
+data:
+  sample_submission: input/home-credit-default-risk/sample_submission.csv
+cols_definition:
+  id_col: SK_ID_CURR
+  target_col: TARGET
+  categorical_col:
+    - NAME_CONTRACT_TYPE
+    - CODE_GENDER
+    - FLAG_OWN_CAR
+    - FLAG_OWN_REALTY
+    - NAME_TYPE_SUITE
+    - NAME_INCOME_TYPE
+    - NAME_EDUCATION_TYPE
+    - NAME_FAMILY_STATUS
+    - NAME_HOUSING_TYPE
+    - OCCUPATION_TYPE
+    - WEEKDAY_APPR_PROCESS_START
+    - ORGANIZATION_TYPE
+    - FONDKAPREMONT_MODE
+    - HOUSETYPE_MODE
+    - WALLSMATERIAL_MODE
+    - EMERGENCYSTATE_MODE
+
+aggregation:
+    groupby_dict:
+      -
+        key:
+          - SK_ID_CURR
+        var:
+          - MONTHS_BALANCE
+          - CNT_INSTALMENT
+          - CNT_INSTALMENT_FUTURE
+          - SK_DPD
+          - SK_DPD_DEF
+        agg:
+          - mean
+          - std
+          - min
+          - max
+        "on":
+          - SK_ID_CURR
+      -
+        key:
+          - SK_ID_CURR
+        var:
+          - NAME_CONTRACT_STATUS_Active
+          - NAME_CONTRACT_STATUS_Amortized debt
+          - NAME_CONTRACT_STATUS_Approved
+          - NAME_CONTRACT_STATUS_Canceled
+          - NAME_CONTRACT_STATUS_Completed
+          - NAME_CONTRACT_STATUS_Demand
+          - NAME_CONTRACT_STATUS_Returned to the store
+          - NAME_CONTRACT_STATUS_Signed
+          - NAME_CONTRACT_STATUS_XNA
+          - NAME_CONTRACT_STATUS_nan
+        agg:
+          - mean
+        "on":
+          - SK_ID_CURR
+    nunique_dict:
+      -
+        key:
+          - SK_ID_CURR
+        var:
+          - SK_ID_PREV
+        agg:
+          - count
+          - nunique
+        "on":
+          - SK_ID_CURR
