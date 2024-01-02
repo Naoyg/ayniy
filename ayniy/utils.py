@@ -5,12 +5,15 @@ import random
 import sys
 import time
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Any, Dict, List
 
 import joblib
 import numpy as np
 import pandas as pd
 import torch
+
+HOME_PATH = Path(__file__).resolve().parents[1]
 
 
 def seed_everything(seed: int = 777) -> None:
@@ -88,8 +91,8 @@ class Logger:
         self.general_logger = logging.getLogger("general")
         self.result_logger = logging.getLogger("result")
         stream_handler = logging.StreamHandler(stream=sys.stdout)
-        file_general_handler = logging.FileHandler("../output/logs/general.log")
-        file_result_handler = logging.FileHandler("../output/logs/result.log")
+        file_general_handler = logging.FileHandler(HOME_PATH / "output/logs/general.log")
+        file_result_handler = logging.FileHandler(HOME_PATH / "output/logs/result.log")
         if len(self.general_logger.handlers) == 0:
             self.general_logger.addHandler(stream_handler)
             self.general_logger.addHandler(file_general_handler)

@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -148,8 +148,9 @@ def circle_encoding(
 
 
 class GroupbyTransformer:
-    def __init__(self, param_dict: Dict[Any, Any]) -> None:
+    def __init__(self, param_dict: Dict[Any, Any], df_left: Optional[pd.DataFrame] = None) -> None:
         self.param_dict = param_dict
+        self.df_left = df_left
 
     def _get_params(
         self, p_dict: Dict[Any, Any]
@@ -180,10 +181,13 @@ class GroupbyTransformer:
             self.features.append(features)
 
     def _merge(self, dataframe: pd.DataFrame, merge: bool = True) -> pd.DataFrame:
-        for param_dict, features in zip(self.param_dict, self.features):
+        for i, (param_dict, features) in enumerate(zip(self.param_dict, self.features)):
             key, var, agg, on = self._get_params(param_dict)
             if merge:
-                dataframe = dataframe.merge(features, how="left", on=on)
+                if (i == 0) and (self.df_left is not None):
+                    dataframe = self.df_left.merge(features, how="left", on=on)
+                else:
+                    dataframe = dataframe.merge(features, how="left", on=on)
             else:
                 new_features = self._get_feature_names(key, var, agg)
                 dataframe = pd.concat([dataframe, features[new_features]], axis=1)

@@ -2,6 +2,6 @@ defaults:
   - model: lgbm
   - data: fe000
 description: LightGBM
-exp_name: titanic
+exp_name: home_credit
 run_name: run000
 evaluation_metric: auc
