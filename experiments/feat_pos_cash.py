@@ -40,8 +40,10 @@ def main():
     y_train = Data.load(output_dir / "y_train_fe001.pkl")
     X_test = Data.load(output_dir / "X_test_fe001.pkl")
 
-    X_train = X_train.merge(df_pos_processed, on=id_col, how="left", validate="one_to_one")
-    X_test = X_test.merge(df_pos_processed, on=id_col, how="left", validate="one_to_one")
+    X_train = X_train.merge(df_pos_processed, left_index=True, right_on=id_col, how="left", validate="one_to_one")
+    X_test = X_test.merge(df_pos_processed, left_index=True, right_on=id_col, how="left", validate="one_to_one")
+
+    X_train, X_test = X_train.set_index(id_col), X_test.set_index(id_col)
 
     fe_name = "fe002"
     Data.dump(X_train, output_dir / f"X_train_{fe_name}.pkl")
