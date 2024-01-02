@@ -346,7 +346,12 @@ class Runner:
             sub[self.cols_definition["target_col"]] = np.exp(pred)
         else:
             sub[self.cols_definition["target_col"]] = pred
-        sub.to_csv(HOME_PATH / f"output/submissions/submission_{self.run_name}.csv", index=False)
+        save_csv_file = HOME_PATH / f"output/submissions/submission_{self.run_name}.csv"
+        sub.to_csv(save_csv_file, index=False)
+
+        mlflow.start_run(run_id=self.run_id)
+        log_artifact(save_csv_file)
+        mlflow.end_run()
 
     def reset_mlflow(self) -> None:
         mlflow.end_run()
