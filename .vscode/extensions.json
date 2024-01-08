@@ -14,6 +14,8 @@
         "aaron-bond.better-comments",
         "formulahendry.code-runner",
         "ms-python.vscode-pylance",
-        "kevinrose.vsc-python-indent"
+        "kevinrose.vsc-python-indent",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker"
     ]
 }
