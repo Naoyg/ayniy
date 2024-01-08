@@ -11,3 +11,14 @@ paths = ["."]
 
 [tool.pysen.lint.source]
 excludes = ["docs/"]
+
+[tool.ruff]
+select = [
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "D",   # pydocstyle
+]
+ignore = ["D415"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
