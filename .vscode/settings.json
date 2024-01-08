@@ -1,0 +1,16 @@
+"": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    }
+},
+"ruff.organizeImports": false,
+"isort.args": [
+    "--profile",
+    "black"
+],
+"python.analysis.typeCheckingMode": "strict",
+"ruff.format.args": [
+    "--config=pyproject.toml"
+],

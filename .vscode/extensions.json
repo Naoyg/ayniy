@@ -1,0 +1,19 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.isort",
+        "njpwerner.autodocstring",
+        "oderwat.indent-rainbow",
+        "shardulm94.trailing-spaces",
+        "redhat.vscode-yaml",
+        "gruntfuggly.todo-tree",
+        "pkief.material-icon-theme",
+        "mosapride.zenkaku",
+        "aaron-bond.better-comments",
+        "formulahendry.code-runner",
+        "ms-python.vscode-pylance",
+        "kevinrose.vsc-python-indent"
+    ]
+}
