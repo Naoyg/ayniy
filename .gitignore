@@ -1,5 +1,4 @@
 *.vec
-*.json
 *.csv
 *.pickle
 *.pkl
