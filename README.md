@@ -54,7 +54,7 @@ sh start.sh
 #### Environment
 
 ```bash
-docker compose -d --build
+docker compose up -d --build
 docker exec -it ayniy-test bash
 ```
 
